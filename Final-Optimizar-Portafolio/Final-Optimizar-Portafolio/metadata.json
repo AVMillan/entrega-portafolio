@@ -1,0 +1,6 @@
+{
+  "name": "Optimización de Portafolios",
+  "description": "Aplicación web SPA para construir, analizar y optimizar un portafolio de inversión bajo el modelo de Markowitz.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

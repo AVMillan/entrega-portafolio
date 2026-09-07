@@ -1,0 +1,7 @@
+--- src/components/IngestSidebar.tsx
++++ src/components/IngestSidebar.tsx
+@@ -85,3 +85,3 @@
+         if (newSelected.size > 0 && rawParsedData.length > 0) {
+-        processData(rawParsedData, Array.from(newSelected));
++        processData(rawParsedData, Array.from(newSelected) as string[]);
+     } else {

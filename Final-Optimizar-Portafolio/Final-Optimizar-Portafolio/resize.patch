@@ -1,0 +1,57 @@
+--- src/App.tsx
++++ src/App.tsx
+@@ -4,3 +4,3 @@
+  */
+-import React, { useState, useMemo } from 'react';
++import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
+ import { ErrorBoundary } from './components/ErrorBoundary';
+@@ -21,2 +21,27 @@
+ 
++  // Resize logic
++  const [sidebarWidth, setSidebarWidth] = useState(320); // 320px default
++  const isResizing = useRef(false);
++
++  const startResizing = useCallback(() => {
++    isResizing.current = true;
++  }, []);
++
++  const stopResizing = useCallback(() => {
++    isResizing.current = false;
++  }, []);
++
++  const resize = useCallback((mouseMoveEvent: MouseEvent) => {
++    if (isResizing.current) {
++      setSidebarWidth((prevWidth) => Math.max(250, Math.min(mouseMoveEvent.clientX, 800)));
++    }
++  }, []);
++
++  useEffect(() => {
++    window.addEventListener('mousemove', resize);
++    window.addEventListener('mouseup', stopResizing);
++    return () => {
++      window.removeEventListener('mousemove', resize);
++      window.removeEventListener('mouseup', stopResizing);
++    };
++  }, [resize, stopResizing]);
++
+   const handleDataReady = (data: CleaningResult) => {
+@@ -67,5 +92,12 @@
+           {/* Barra Lateral de Controles */}
+-          <aside className="w-80 bg-[#111827]/50 border-r border-slate-800 p-4 overflow-y-auto flex flex-col shrink-0">
++          <aside 
++            className="bg-[#111827]/50 border-r border-slate-800 p-4 overflow-y-auto flex flex-col shrink-0"
++            style={{ width: sidebarWidth }}
++          >
+             <div className="text-slate-300 text-sm font-semibold tracking-wider uppercase border-b border-slate-700 pb-2 mb-4">
+               Controles e Ingesta
+             </div>
+@@ -75,3 +107,9 @@
+             />          
+           </aside>
++
++          {/* Resizer Handle */}
++          <div
++            className="w-2 cursor-col-resize hover:bg-cyan-500/30 bg-transparent shrink-0 z-10 transition-colors border-r border-slate-800/30 -ml-1"
++            onMouseDown={startResizing}
++          />
+ 
