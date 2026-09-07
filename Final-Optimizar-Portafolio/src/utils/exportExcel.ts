@@ -59,12 +59,7 @@ export const exportResultsToExcel = (
   }));
   const wsSim = XLSX.utils.json_to_sheet(simData);
   applyFormats(wsSim, (ref, cell) => {
-    const col = ref.replace(/[0-9]/g, '');
-    if (col === 'C') { // Sharpe is in column C
-      cell.z = '0.00';
-    } else { // Retorno and Volatility in A and B
-      cell.z = '0.00%';
-    }
+    cell.z = '0.00%'; // Formatear todo (Retorno, Volatilidad y Sharpe) como porcentaje
   });
   wsSim['!cols'] = [{ wch: 20 }, { wch: 20 }, { wch: 15 }];
   XLSX.utils.book_append_sheet(wb, wsSim, 'Simulaciones Monte Carlo');
@@ -89,6 +84,12 @@ export const exportResultsToExcel = (
   
   XLSX.utils.book_append_sheet(wb, wsCov, 'Matriz Covarianzas');
 
-  // Guardar archivo
-  XLSX.writeFile(wb, 'Optimizacion_Portafolios.xlsx');
+  try {
+    const dateStr = new Date().toISOString().split('T')[0];
+    const fileName = `Resultados_Optimizacion_Portafolios_${dateStr}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+    console.log("Excel exportado exitosamente:", fileName);
+  } catch (error) {
+    console.error("Error al exportar Excel:", error);
+  }
 };

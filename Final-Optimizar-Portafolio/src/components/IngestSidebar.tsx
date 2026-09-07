@@ -119,7 +119,8 @@ export const IngestSidebar: React.FC<IngestSidebarProps> = ({
     setIsValidatingTicker(true);
     setApiError(null);
     try {
-      const res = await fetch(`/api/yahoo/validate?ticker=${tk}`);
+      const apiPath = window.location.hostname.includes('netlify.app') ? '/.netlify/functions/validate' : '/api/yahoo/validate';
+      const res = await fetch(`${apiPath}?ticker=${tk}`);
       const data = await res.json();
       
       if (data.valid) {
@@ -168,7 +169,8 @@ export const IngestSidebar: React.FC<IngestSidebarProps> = ({
       const processedTickers: string[] = [];
 
       for (const ticker of apiTickers) {
-        const response = await fetch(`/api/yahoo?ticker=${encodeURIComponent(ticker)}&period1=${fromDate}&period2=${toDate}`);
+        const apiPath = window.location.hostname.includes('netlify.app') ? '/.netlify/functions/yahoo' : '/api/yahoo';
+        const response = await fetch(`${apiPath}?ticker=${encodeURIComponent(ticker)}&period1=${fromDate}&period2=${toDate}`);
         if (!response.ok) {
           const errData = await response.json().catch(() => ({}));
           throw new Error(`Error al descargar ${ticker}: ${errData.error || response.statusText}`);
